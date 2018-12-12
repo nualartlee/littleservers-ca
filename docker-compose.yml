@@ -4,6 +4,11 @@ secrets:
   certbot_email:
     file: ./secrets/certbot_email.txt
 
+networks:
+  littleservers.ca_default:
+  nginx_default:
+    external: true
+
 services:
 
     nginx:
@@ -17,4 +22,7 @@ services:
           CERTBOT_EMAIL: /run/secrets/certbot_email
         secrets:
          - source: certbot_email
+        networks:
+         - littleservers.ca_default
+         - nginx_default
         restart: unless-stopped
