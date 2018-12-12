@@ -52,14 +52,18 @@ else
     check_errs $? "Failed storing LetsEncrypt certbot email"
 fi
 
-# Start Docker
+# Ensure docker is running
 service docker start
 check_errs $? "Failed starting docker"
 
-# Building containers
+# Stop containers
+docker-compose down
+check_errs $? "Failed stopping containers"
+
+# Rebuild containers
 echo
 echo "Building containers"
-docker-compose -f docker-compose.yml build
+docker-compose build
 check_errs $? "Failed building containers"
 
 # Run containers in background
