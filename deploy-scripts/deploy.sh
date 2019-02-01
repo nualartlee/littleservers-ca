@@ -8,12 +8,15 @@
 #
 # The project should already be present under git with remote origin
 # set up before running this script
+#
+# Custom scripts/build.sh and scripts/post_build.sh scripts will be run
+# if found
 
-# Work from script's directory
-cd "${0%/*}"
+# Work from projects's directory
+cd "${0%/*}/.."
 
 # Import common functions
-source scripts/common.sh
+source deploy-scripts/common.sh
 
 # Assume the project's name is the same as the containing directory
 projectname=${PWD##*/}
@@ -43,23 +46,10 @@ check_errs $? "Unable to pull from remote repository"
 # Run any custom build script
 if [ -e scripts/build.sh ]
 then
-    echo "secrets directory already exists"
-else
-    echo "Creating secrets directory"
-    mkdir secrets
-    check_errs $? "Failed creating secrets directory"
-fi
-chmod 660 secrets
-check_errs $? "Failed setting secret directory permissions"
-
-# Get email address for LetsEncrypt certbot
-file=secrets/certbot_email.txt
-if [ -e $file ]
-then
-    echo "LetsEncrypt certbot administrator email already exists"
     echo "Running custom build script"
     scripts/build.sh
     check_errs $? "Custom build script failed"
+
 else
     echo "No custom build scripts"
 fi
@@ -100,5 +90,15 @@ fi
 
 echo
 echo "Deployment Completed"
-echo "Project is running"
+echo
+
+# Run tests
+echo "Starting tests..."
+deploy-scripts/deployment_test.sh
+check_errs $? "Test failed."
+
+# Completed successfully
+echo
+echo "Project Running"
+echo
 echo
