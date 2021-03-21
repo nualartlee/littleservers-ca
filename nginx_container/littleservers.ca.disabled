@@ -2,16 +2,16 @@ server {
 	listen	80;
 	listen	[::]:80;
 	server_name littleservers.ca;
+    access_log logs/littleservers.ca main;
 
 	# Pass this particular URL off to certbot, to authenticate HTTPS certificates
-	location '/.well-known/acme-challenge' {
-	  default_type "text/plain";
-	  proxy_pass http://localhost:1337;
-	}
+	location /.well-known/acme-challenge {
+	        root /www;
+         }
 
-        # Static files
+        # Everything else gets shunted over to HTTPS
 	location / {
-	  root /www;
-	}
+          return 301 https://$http_host$request_uri;
+        }
 }
 

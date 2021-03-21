@@ -4,13 +4,12 @@ server {
 	server_name littleservers.ca;
 	ssl_certificate     /etc/letsencrypt/live/littleservers.ca/fullchain.pem;
 	ssl_certificate_key /etc/letsencrypt/live/littleservers.ca/privkey.pem;
-
-	charset     utf-8;
-
-	# max upload size
-	client_max_body_size 75M;
+    access_log logs/littleservers.ca main;
 
 	location / {
-	  root /www;
+	  proxy_pass http://172.16.0.4;
+          proxy_set_header Host littleservers.ca;
+          proxy_pass_request_headers on;
 	}
 }
+

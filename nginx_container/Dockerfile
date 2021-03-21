@@ -1,4 +1,4 @@
-FROM nualartlee/nginx-certbot
+FROM nualartlee/nginx-certbot:latest
 
 # To configure a site create a .conf file in the nginx folder.
 # All the .conf files found will be copied and enabled.
